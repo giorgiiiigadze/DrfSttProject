@@ -46,6 +46,7 @@ class TranscriptionSerializer(serializers.ModelSerializer):
             "audio",
             "text",
             "status",
+            "progress",
             "language",
             "model_name",
             "confidence",
@@ -76,3 +77,13 @@ class TranscriptionSerializer(serializers.ModelSerializer):
             validated_data["completed_at"] = timezone.now()
 
         return super().update(instance, validated_data)
+
+
+from rest_framework import serializers
+from .models import Transcription
+
+
+class TranscriptionEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transcription
+        fields = ["text"]

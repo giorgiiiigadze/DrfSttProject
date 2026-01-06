@@ -6,4 +6,5 @@ urlpatterns = [
     path('audios/', include("audios.urls")),
     path('transcription/', include("transcription.urls")),
     path('users/', include("users.urls")),
+    path('ai/', include("ai.urls")),
 ]

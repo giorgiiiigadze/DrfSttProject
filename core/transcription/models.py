@@ -37,6 +37,8 @@ class Transcription(models.Model):
         default="pending",
     )
 
+    progress = models.PositiveSmallIntegerField(default=0)
+
     language = models.CharField(max_length=10, blank=True)
     model_name = models.CharField(max_length=50, blank=True)
     confidence = models.FloatField(null=True, blank=True)
@@ -44,7 +46,10 @@ class Transcription(models.Model):
     processing_time = models.FloatField(null=True, blank=True)  # seconds
     tokens_used = models.PositiveIntegerField(null=True, blank=True)
 
-    error_message = models.TextField(blank=True)
+    error_message = models.TextField(
+        null=True,
+        blank=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)

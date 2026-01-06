@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "transcription",
     "users",
     "payment",
+    "ai",
 ]
 
 AUTH_USER_MODEL = "users.User"
