@@ -10,8 +10,30 @@ class LoginSerializer(serializers.Serializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
-        read_only_fields = ("id", "username")
+        fields = (
+            "id",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "date_joined",
+            "updated_at",
+            "credits",
+            "user_permissions",
+        )
+
+        read_only_fields = (
+            "id",
+            "email",
+            "username",
+            "is_staff",
+            "date_joined",
+            "updated_at",
+            "credits",
+            "user_permissions",
+        )
 
 # For logout
 class EmptySerializer(serializers.Serializer):

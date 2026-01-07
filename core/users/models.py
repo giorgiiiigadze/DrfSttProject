@@ -25,6 +25,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     # bio = models.TextField(blank=True)
     # email_verified = models.BooleanField(default=False)
 
+    credits = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 

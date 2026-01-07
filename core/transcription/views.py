@@ -14,7 +14,6 @@ from .permissions import (
     CanCreateTranscription,
 )
 
-
 class UserTranscriptionListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TranscriptionSerializer

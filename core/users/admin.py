@@ -6,12 +6,13 @@ from .models import User
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     ordering = ("email",)
-    list_display = ("email", "username", "is_staff", "is_active")
+    list_display = ("email", "username", "credits", "is_staff", "is_active")
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Personal Info", {"fields": ("username", "first_name", "last_name")}),
-        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
+        ("Personal Info", {"fields": ("username", "first_name", "last_name", "credits")}),
+        # Groups
+        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "user_permissions")}),
         ("Dates", {"fields": ("last_login", "date_joined")}),
     )
 

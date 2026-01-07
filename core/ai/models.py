@@ -12,6 +12,10 @@ class AISummary(models.Model):
     key_points = models.JSONField(default=list)
     tone = models.CharField(max_length=100, blank=True)
 
+    tokens_used = models.PositiveIntegerField(null=True, blank=True)
+    input_tokens = models.PositiveIntegerField(null=True, blank=True)
+    output_tokens = models.PositiveIntegerField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

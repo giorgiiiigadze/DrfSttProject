@@ -74,13 +74,19 @@ class AISummarizeAudioView(APIView):
         text = transcription.text
         truncated = len(text) > 8000
 
-        result = summarize_transcript(text[:8000])
+        result = summarize_transcript(
+            user=request.user,
+            transcript_text=text[:8000],
+        )
 
         summary_obj = AISummary.objects.create(
             audio=audio,
             summary=result.get("summary", ""),
             key_points=result.get("key_points", []),
             tone=result.get("tone", ""),
+            tokens_used=result.get("tokens_used"),
+            input_tokens=result.get("input_tokens"),
+            output_tokens=result.get("output_tokens"),
         )
 
         return Response(
@@ -92,6 +98,7 @@ class AISummarizeAudioView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
 
 
 class UserSummarizedAudiosView(ListAPIView):

@@ -9,6 +9,8 @@ from .serializers import AudioSerializer
 
 from pydub import AudioSegment
 
+# Add later to export the audio files transcription
+
 class Audios(ListCreateAPIView):
     serializer_class = AudioSerializer
     permission_classes = [IsAuthenticated]

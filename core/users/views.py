@@ -11,7 +11,7 @@ from .serializer import LoginSerializer, EmptySerializer, UserProfileSerializer
 from .utils import set_jwt_cookies, clear_jwt_cookies
 
 class LoginView(GenericAPIView):
-    authentication_classes = []          # 🔥 VERY IMPORTANT
+    authentication_classes = []
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
