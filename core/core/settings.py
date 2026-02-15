@@ -44,11 +44,14 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    
+
 ]
+
 
 ROOT_URLCONF = "core.urls"
 
@@ -95,11 +98,25 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5174",
+    "http://localhost:5174",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5174",
+    "http://localhost:5174",
+]
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
 ]
 
 CSRF_COOKIE_HTTPONLY = False
@@ -120,14 +137,19 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_COOKIE_SECURE": False,
+    "AUTH_COOKIE_HTTP_ONLY": True,
 
     "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_COOKIE_SAMESITE": "Lax",
 }
 
 SECURE_BROWSER_XSS_FILTER = True
@@ -147,5 +169,15 @@ CELERY_TASK_ALWAYS_EAGER = False
 CELERY_TIMEZONE = "UTC"
 
 # Costing for AI usage
-TRANSCRIPTION_COST_PER_MINUTE = os.getenv("TRANSCRIPTION_COST_PER_MINUTE")
-SUMMARIZATION_COST_PER_TOKEN = os.getenv("SUMMARIZATION_COST_PER_TOKEN")
+TOKENS_PER_CREDIT = 1000
+CHARS_PER_TOKEN = 4
+
+SECONDS_PER_CREDIT = 30
+
+TRANSCRIPTION_COST_PER_MINUTE = float(
+    os.getenv("TRANSCRIPTION_COST_PER_MINUTE", "0.006")
+)
+
+SUMMARIZATION_COST_PER_TOKEN = float(
+    os.getenv("SUMMARIZATION_COST_PER_TOKEN", "0.00015")
+)

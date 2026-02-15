@@ -3,21 +3,19 @@ import math
 
 from django.db import transaction
 from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 from langchain_core.prompts import PromptTemplate
 
 from .llm import get_llm
 from .prompts import SUMMARY_PROMPT
 
-TOKENS_PER_CREDIT = 1000
-CHARS_PER_TOKEN = 4
-
 def estimate_tokens(text: str) -> int:
-    return max(1, len(text) // CHARS_PER_TOKEN)
+    return max(1, len(text) // settings.CHARS_PER_TOKEN)
 
 
 def tokens_to_credits(tokens: int) -> int:
-    return math.ceil(tokens / TOKENS_PER_CREDIT)
+    return math.ceil(tokens / settings.TOKENS_PER_CREDIT)
 
 
 def summarize_transcript(*, user, transcript_text: str) -> dict:

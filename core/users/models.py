@@ -20,12 +20,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+
     # Add later fields
-    # avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
     # bio = models.TextField(blank=True)
     # email_verified = models.BooleanField(default=False)
 
-    credits = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    credits = models.DecimalField(max_digits=10, decimal_places=2, default=30.00)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

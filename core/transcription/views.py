@@ -97,6 +97,7 @@ class AudioTranscriptionView(APIView):
                 status=status.HTTP_202_ACCEPTED,
             )
 
+
         if transcription.status == "completed":
             return Response(
                 {
@@ -109,9 +110,6 @@ class AudioTranscriptionView(APIView):
         transcription.progress = 0
         transcription.error_message = None
         transcription.save(update_fields=["status", "progress", "error_message"])
-
-        audio.transcripted = True
-        audio.save(update_fields=["transcripted"])
 
         process_transcription.delay(str(transcription.id))
 

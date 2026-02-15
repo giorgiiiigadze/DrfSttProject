@@ -6,9 +6,38 @@ from rest_framework.generics import *
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from rest_framework.views import APIView
+from users.authentication import CookieJWTAuthentication
+
 from .models import *
-from .serializer import LoginSerializer, EmptySerializer, UserProfileSerializer
+from .serializer import *
 from .utils import set_jwt_cookies, clear_jwt_cookies
+
+class RegisterView(GenericAPIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.save()
+
+        refresh = RefreshToken.for_user(user)
+
+        response = Response(
+            {"detail": "Registration successful"},
+            status=status.HTTP_201_CREATED,
+        )
+
+        set_jwt_cookies(
+            response,
+            access=str(refresh.access_token),
+            refresh=str(refresh),
+        )
+
+        return response
 
 class LoginView(GenericAPIView):
     authentication_classes = []
@@ -89,9 +118,18 @@ class RefreshView(TokenRefreshView):
 
         return response
 
-class UserProfileView(RetrieveUpdateAPIView):
-    serializer_class = UserProfileSerializer
+class ProfileView(RetrieveUpdateAPIView):
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = UserProfileSerializer
 
     def get_object(self):
         return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)

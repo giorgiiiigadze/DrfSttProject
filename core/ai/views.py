@@ -40,6 +40,7 @@ class AISummarizeAudioView(APIView):
                 "summary": summary.summary,
                 "key_points": summary.key_points,
                 "tone": summary.tone,
+                "topics": summary.topics,
             },
             status=status.HTTP_200_OK,
         )
@@ -79,40 +80,44 @@ class AISummarizeAudioView(APIView):
             transcript_text=text[:8000],
         )
 
+        topics = result.get("topics", [])
+        if not isinstance(topics, list):
+            topics = []
+
+        key_points = result.get("key_points", [])
+        if not isinstance(key_points, list):
+            key_points = []
+
         summary_obj = AISummary.objects.create(
             audio=audio,
             summary=result.get("summary", ""),
-            key_points=result.get("key_points", []),
+            key_points=key_points,
+            topics=topics,
             tone=result.get("tone", ""),
             tokens_used=result.get("tokens_used"),
             input_tokens=result.get("input_tokens"),
             output_tokens=result.get("output_tokens"),
         )
+        audio.summarized = True
+        audio.save(update_fields=['summarized'])
 
         return Response(
             {
                 "summary": summary_obj.summary,
                 "key_points": summary_obj.key_points,
+                "topics": summary_obj.topics,
                 "tone": summary_obj.tone,
                 "truncated": truncated,
             },
             status=status.HTTP_200_OK,
         )
 
-
-
 class UserSummarizedAudiosView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AudioSummaryListSerializer
 
     def get_queryset(self):
-        return (
-            Audio.objects
-            .filter(
-                user=self.request.user,
-                ai_summary__isnull=False,
-                is_deleted=False,
-            )
-            .select_related("ai_summary")
-            .order_by("-ai_summary__created_at")
-        )
+        return AISummary.objects.filter(
+            audio__user=self.request.user,
+            audio__is_deleted=False
+        ).select_related("audio").order_by("-created_at")

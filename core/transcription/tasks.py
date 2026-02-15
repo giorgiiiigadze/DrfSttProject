@@ -3,6 +3,7 @@ from django.db import transaction
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 from .models import Transcription
 from .services import whisper_transcribe
@@ -11,11 +12,10 @@ import math
 
 
 User = get_user_model()
-SECONDS_PER_CREDIT = 30
 
 
 def seconds_to_credits(seconds: float) -> int:
-    return math.ceil(seconds / SECONDS_PER_CREDIT)
+    return math.ceil(seconds / settings.SECONDS_PER_CREDIT)
 
 
 @shared_task(name="transcriptions.process_transcription")
@@ -40,7 +40,7 @@ def process_transcription(transcription_id):
 
         if user.credits < required_credits:
             transcription.status = "failed"
-            transcription.error_message = "Not enough credits for transcription, Try retranscription"
+            transcription.error_message = "Not enough credits for transcription"
             transcription.save(update_fields=["status", "error_message"])
             return
 
@@ -68,6 +68,11 @@ def process_transcription(transcription_id):
         transcription.completed_at = timezone.now()
         transcription.save()
 
+        audio.refresh_from_db()
+        audio.transcripted = True
+        audio.save(update_fields=["transcripted"])
+        print(f"Audio {audio.id} transcripted set to True")
+
     except Exception as e:
         with transaction.atomic():
             user = (
@@ -82,5 +87,10 @@ def process_transcription(transcription_id):
         transcription.error_message = str(e)
         transcription.progress = 0
         transcription.save(update_fields=["status", "error_message", "progress"])
+
+        audio.refresh_from_db()
+        audio.transcripted = False
+        audio.save(update_fields=["transcripted"])
+        print(f"Audio {audio.id} transcripted set to False due to failure")
 
         raise

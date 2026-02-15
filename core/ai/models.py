@@ -11,6 +11,7 @@ class AISummary(models.Model):
     summary = models.TextField()
     key_points = models.JSONField(default=list)
     tone = models.CharField(max_length=100, blank=True)
+    topics = models.JSONField(default=list)
 
     tokens_used = models.PositiveIntegerField(null=True, blank=True)
     input_tokens = models.PositiveIntegerField(null=True, blank=True)

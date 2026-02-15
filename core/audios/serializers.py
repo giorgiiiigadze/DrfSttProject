@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Audio
+from .models import *
 from .validators import (
     validate_audio_file,
     validate_audio_title,
@@ -17,12 +17,14 @@ class AudioSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "file",
+            "image",
             "title",
             "duration",
             "size",
             "mime_type",
             "status",
             "transcripted",
+            "summarized",
             "is_deleted",
             "deleted_at",
             "created_at",
@@ -35,6 +37,7 @@ class AudioSerializer(serializers.ModelSerializer):
             "mime_type",
             "status",
             "transcripted",
+            "summarized",
             "is_deleted",
             "deleted_at",
             "created_at",
@@ -48,3 +51,14 @@ class AudioSerializer(serializers.ModelSerializer):
     title = serializers.CharField(
         validators=[validate_audio_title]
     )
+
+class AudioNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AudioNote
+        fields = [
+            "id",
+            "timestamp",
+            "text",
+            "created_at",
+        ]
+        read_only_fields = ["id", "created_at"]

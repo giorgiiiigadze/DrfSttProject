@@ -2,17 +2,19 @@ from rest_framework import serializers
 from audios.models import Audio
 from ai.models import AISummary
 
-
 class AudioSummaryListSerializer(serializers.ModelSerializer):
-    summary = serializers.CharField(source="ai_summary.summary")
-    tone = serializers.CharField(source="ai_summary.tone")
+    audio_id = serializers.IntegerField(source="audio.id")
 
     class Meta:
-        model = Audio
+        model = AISummary
         fields = [
-            "id",
-            "title",
+            "audio_id",
             "summary",
+            "key_points",
+            "topics",
             "tone",
+            "tokens_used",
+            "input_tokens",
+            "output_tokens",
             "created_at",
         ]

@@ -19,6 +19,12 @@ class Audio(models.Model):
     )
 
     file = models.FileField(upload_to="audio/")
+    image = models.ImageField(
+        upload_to="audio/images/",
+        null=True,
+        blank=True
+    )
+    
     title = models.CharField(max_length=255)
 
     duration = models.FloatField(null=True, blank=True)
@@ -38,6 +44,7 @@ class Audio(models.Model):
     )
 
     transcripted = models.BooleanField(default=False)
+    summarized = models.BooleanField(default=False)
 
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -60,3 +67,12 @@ class Audio(models.Model):
         self.is_deleted = False
         self.deleted_at = None
         self.save(update_fields=["is_deleted", "deleted_at"])
+
+class AudioNote(models.Model):
+    audio = models.ForeignKey(Audio, on_delete=models.CASCADE, related_name="notes")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    timestamp = models.FloatField() 
+    text = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
