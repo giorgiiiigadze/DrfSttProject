@@ -45,14 +45,38 @@ Choose ONE word that best describes the overall tone:
 informative, conversational, formal, humorous, serious, inspirational, 
 analytical, storytelling, educational, persuasive, reflective, urgent, casual
 
+=====================
+SPEAKERS GUIDELINES
+=====================
+- Extract all speakers mentioned in the transcript
+- List as a simple array of names (strings)
+- Ignore fillers or unnamed participants
+
+=====================
+ACTION ITEMS GUIDELINES
+=====================
+- Extract any tasks, decisions, or follow-ups
+- One item per bullet point
+- Include only actionable or assignable items
+
+=====================
+NOTABLE QUOTES GUIDELINES
+=====================
+- Extract 3-5 interesting or meaningful quotes
+- Quotes should capture insight, humor, or significance
+- Include only verbatim quotes from the transcript
+
 Transcript:
 {transcript}
 
-Return ONLY valid JSON:
+Return ONLY valid JSON in this format:
 {{
   "summary": "string (2-4 sentences capturing both content and significance)",
   "key_points": ["string", "string", ...],
   "topics": ["string", "string", ...],
-  "tone": "string (one word)"
+  "tone": "string (one word)",
+  "speakers": ["string", "string", ...],
+  "action_items": ["string", "string", ...],
+  "notable_quotes": ["string", "string", ...]
 }}
 """

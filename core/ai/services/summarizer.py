@@ -17,7 +17,6 @@ def estimate_tokens(text: str) -> int:
 def tokens_to_credits(tokens: int) -> int:
     return math.ceil(tokens / settings.TOKENS_PER_CREDIT)
 
-
 def summarize_transcript(*, user, transcript_text: str) -> dict:
 
     estimated_tokens = estimate_tokens(transcript_text)

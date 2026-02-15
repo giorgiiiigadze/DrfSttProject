@@ -13,6 +13,10 @@ class AISummary(models.Model):
     tone = models.CharField(max_length=100, blank=True)
     topics = models.JSONField(default=list)
 
+    speakers = models.JSONField(default=list, blank=True)
+    action_items = models.JSONField(default=list, blank=True)
+    notable_quotes = models.JSONField(default=list, blank=True)
+
     tokens_used = models.PositiveIntegerField(null=True, blank=True)
     input_tokens = models.PositiveIntegerField(null=True, blank=True)
     output_tokens = models.PositiveIntegerField(null=True, blank=True)

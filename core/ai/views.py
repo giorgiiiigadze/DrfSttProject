@@ -13,7 +13,6 @@ from .models import AISummary
 from .serializers import AudioSummaryListSerializer
 from .services.summarizer import summarize_transcript
 
-
 class AISummarizeAudioView(APIView):
     permission_classes = [
         IsAuthenticated,
@@ -41,6 +40,9 @@ class AISummarizeAudioView(APIView):
                 "key_points": summary.key_points,
                 "tone": summary.tone,
                 "topics": summary.topics,
+                "speakers": summary.speakers,
+                "action_items": summary.action_items,
+                "notable_quotes": summary.notable_quotes,
             },
             status=status.HTTP_200_OK,
         )
@@ -88,12 +90,27 @@ class AISummarizeAudioView(APIView):
         if not isinstance(key_points, list):
             key_points = []
 
+        speakers = result.get("speakers", [])
+        if not isinstance(speakers, list):
+            speakers = []
+
+        action_items = result.get("action_items", [])
+        if not isinstance(action_items, list):
+            action_items = []
+
+        notable_quotes = result.get("notable_quotes", [])
+        if not isinstance(notable_quotes, list):
+            notable_quotes = []
+
         summary_obj = AISummary.objects.create(
             audio=audio,
             summary=result.get("summary", ""),
             key_points=key_points,
             topics=topics,
             tone=result.get("tone", ""),
+            speakers=speakers,
+            action_items=action_items,
+            notable_quotes=notable_quotes,
             tokens_used=result.get("tokens_used"),
             input_tokens=result.get("input_tokens"),
             output_tokens=result.get("output_tokens"),
@@ -107,6 +124,9 @@ class AISummarizeAudioView(APIView):
                 "key_points": summary_obj.key_points,
                 "topics": summary_obj.topics,
                 "tone": summary_obj.tone,
+                "speakers": summary_obj.speakers,
+                "action_items": summary_obj.action_items,
+                "notable_quotes": summary_obj.notable_quotes,
                 "truncated": truncated,
             },
             status=status.HTTP_200_OK,
